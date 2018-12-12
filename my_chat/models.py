@@ -1,10 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-    :author: Grey Li (李辉)
-    :url: http://greyli.com
-    :copyright: © 2018 Grey Li <withlihui@gmail.com>
-    :license: MIT, see LICENSE for more details.
-"""
+
 import hashlib
 from datetime import datetime
 
@@ -12,7 +7,7 @@ from flask import current_app
 from flask_login import UserMixin, AnonymousUserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from catchat.extensions import db, login_manager
+from my_chat.extensions import db, login_manager
 
 
 class User(UserMixin, db.Model):
