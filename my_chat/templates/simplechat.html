@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style type="text/css">
+        .talk_con{
+            width:600px;
+            height:500px;
+            border:1px solid #666;
+            margin:50px auto 0;
+            background:#f9f9f9;
+        }
+        .talk_show{
+            width:580px;
+            height:420px;
+            border:1px solid #666;
+            background:#fff;
+            margin:10px auto 0;
+            overflow:auto;
+        }
+        .talk_input{
+            width:580px;
+            margin:10px auto 0;
+        }
+        .whotalk{
+            width:80px;
+            height:30px;
+            float:left;
+            outline:none;
+        }
+        .talk_word{
+            width:420px;
+            height:26px;
+            padding:0px;
+            float:left;
+            margin-left:10px;
+            outline:none;
+            text-indent:10px;
+        }        
+        .talk_sub{
+            width:56px;
+            height:30px;
+            float:left;
+            margin-left:10px;
+        }
+        .atalk{
+           margin:10px; 
+        }
+        .atalk span{
+            display:inline-block;
+            background:#0181cc;
+            border-radius:10px;
+            color:#fff;
+            padding:5px 10px;
+        }
+        .btalk{
+            margin:10px;
+            text-align:right;
+        }
+        .btalk span{
+            display:inline-block;
+            background:#ef8201;
+            border-radius:10px;
+            color:#fff;
+            padding:5px 10px;
+        }
+    </style>
+    <script src="/static/js/jquery-1.12.4.min.js"></script>
+    <script src="/static/js/socket.io.min.js"></script>
+    <script>
+        $(function(){
+            var socket = io('/');
+            var $words = $("#words");
+            var i=Math.random()*(999999-100000)+100000;
+            var my_id = parseInt(i,10);
+
+            $("#talksub").click(function () {
+                //获取到用户输入的文本
+                var talk_words = $("#talkwords").val();
+
+                //判空
+                if(talk_words == ""){
+                    alert("请输入内容!");
+                    return
+                }
+
+                var send_data = {
+                    'talk_words':talk_words,
+                    'my_id':my_id
+                };
+
+                socket.emit('new message',send_data)
+                //清空文本框，以便下一次输入的时候不用手动删除
+
+                new_div = '<div class="atalk"><span>A说：'+ talk_words +'</span></div>';
+                /*alert(new_div);*/
+                $words.append(new_div);
+
+                $("#talkwords").val("");
+            });
+
+            socket.on('new message',function (data) {
+
+                if(data.my_id == my_id){
+                    return
+                }else {
+                    new_div = '<div class="btalk"><span>B说：'+ data.message +'</span></div>';
+                    /*alert(new_div);*/
+                    $words.append(new_div);
+                }
+
+            })
+        })
+    </script>
+</head>
+<body>
+    <div class="talk_con">
+        <div class="talk_show" id="words">
+            <div class="atalk"><span>A说：吃饭了吗？</span></div>
+            <div class="btalk"><span>B说：还没呢，你呢？</span></div>
+        </div>
+        <div class="talk_input">
+            <select class="whotalk" id="who">
+                <option value="0">A说：</option>
+                <!--<option value="1">B说：</option>-->
+            </select>
+            <input type="text" class="talk_word" id="talkwords">
+            <input type="button" value="发送" class="talk_sub" id="talksub">
+        </div>
+    </div>
+</body>
+</html>

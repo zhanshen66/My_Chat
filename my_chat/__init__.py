@@ -1,10 +1,11 @@
 from flask import Flask
 import os
 from my_chat.blueprints.auth import auth_bp
+from my_chat.blueprints.chat import chat_bp
 from my_chat.settings import config
-from my_chat.extensions import db
+from my_chat.extensions import db,socketio
 import click
-from my_chat.models import User,Message
+# from my_chat.models import User,Message
 
 
 
@@ -23,9 +24,11 @@ def create_app(config_name=None):
 
 def register_blueprints(app):
     app.register_blueprint(auth_bp)
+    app.register_blueprint(chat_bp)
 
 def register_extensions(app):
     db.init_app(app)
+    socketio.init_app(app)
 
 def register_command(app):
     @app.cli.command()
