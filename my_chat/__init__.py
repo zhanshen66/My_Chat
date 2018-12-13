@@ -3,7 +3,7 @@ import os
 from my_chat.blueprints.auth import auth_bp
 from my_chat.blueprints.chat import chat_bp
 from my_chat.settings import config
-from my_chat.extensions import db,socketio
+from my_chat.extensions import db,socketio,scheduler
 import click
 # from my_chat.models import User,Message
 
@@ -19,6 +19,7 @@ def create_app(config_name=None):
     register_blueprints(app)
     register_command(app)
 
+    scheduler.start()
     return app
 
 
@@ -29,6 +30,7 @@ def register_blueprints(app):
 def register_extensions(app):
     db.init_app(app)
     socketio.init_app(app)
+    # scheduler.init_app(app)
 
 def register_command(app):
     @app.cli.command()

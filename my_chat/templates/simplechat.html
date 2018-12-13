@@ -67,6 +67,17 @@
             color:#fff;
             padding:5px 10px;
         }
+        .stalk{
+            margin:10px;
+            text-align:right;
+        }
+        .stalk span{
+            display:inline-block;
+            background:red;
+            border-radius:10px;
+            color:#fff;
+            padding:5px 10px;
+        }
     </style>
     <script src="/static/js/jquery-1.12.4.min.js"></script>
     <script src="/static/js/socket.io.min.js"></script>
@@ -76,6 +87,8 @@
             var $words = $("#words");
             var i=Math.random()*(999999-100000)+100000;
             var my_id = parseInt(i,10);
+
+            socket.emit('connect');
 
             $("#talksub").click(function () {
                 //获取到用户输入的文本
@@ -112,6 +125,16 @@
                     $words.append(new_div);
                 }
 
+            })
+
+            socket.on('system message',function (data) {
+                if(data.my_id == 0){
+                    new_div = '<div class="stalk"><span>system说：'+ data.message +'</span></div>';
+                    /*alert(new_div);*/
+                    $words.append(new_div);
+                    console.log($('.talk_show')[0].scrollHeight)
+                    $('.talk_show').scrollTop($('.talk_show')[0].scrollHeight);
+                }
             })
         })
     </script>
